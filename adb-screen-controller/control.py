@@ -15,6 +15,7 @@ def main():
 	screen = pygame.display.set_mode(size, pygame.HWSURFACE)
 	exit = False
 	ticks = 0
+	mayus = 0
 
 	while not exit:
 		for event in pygame.event.get():
@@ -27,6 +28,38 @@ def main():
 				print(real_pos)
 				os.system("adb shell input tap "+str(real_pos[0])+
 									" "+str(real_pos[1]))
+			if event.type == KEYDOWN:
+				if event.key == K_UP:
+					print("UP")
+					os.system("adb shell input keyevent 19")
+				elif event.key == K_DOWN:
+					print("Down")
+					os.system("adb shell input keyevent 20")
+				elif event.key == K_LEFT:
+					print("left")
+					os.system("adb shell input keyevent 21")
+				elif event.key == K_RIGHT:
+					print("Right")
+					os.system("adb shell input keyevent 22")
+				elif event.key == K_BACKSPACE:
+					print("Back")
+					os.system("adb shell input keyevent 67")
+				elif event.key == K_RSHIFT or event.key == K_LSHIFT:
+					mayus = 1
+				else:
+					# In case of space
+					if event.key == 32:
+						os.system("adb shell input text \"%s\"")
+						print("adb shell input text \"%s\"")
+					else:
+						stringo = event.key if mayus == 0 else event.key-32 
+						stringB = "adb shell input text \"%s\"" % chr(stringo)
+						print(stringB)
+						os.system(stringB)
+			if event.type == KEYUP:
+				if event.key == K_RSHIFT or event.key == K_LSHIFT:
+					mayus = 0
+
 				
 		if ticks == 30:
 			os.system("adb exec-out screencap -p >screen.png")
